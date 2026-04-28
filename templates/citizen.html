@@ -1,42 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dashboard | Report2Resolve Bengaluru</title>
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 min-h-screen p-6">
-    <div class="max-w-4xl mx-auto">
-        <h1 class="text-2xl font-bold mb-6">Report an Issue</h1>
-        <form action="/submit" method="POST" class="bg-white p-6 rounded-xl shadow mb-8">
-            <textarea name="desc" placeholder="Describe the problem..." class="w-full border p-3 rounded-lg mb-4" required></textarea>
-            <div class="grid grid-cols-2 gap-4 mb-4">
-                <input type="text" name="lat" id="lat" placeholder="Latitude" class="border p-2 rounded" required>
-                <input type="text" name="lng" id="lng" placeholder="Longitude" class="border p-2 rounded" required>
-            </div>
-            <button type="button" onclick="getLoc()" class="bg-gray-200 px-4 py-2 rounded mb-4 text-sm">Get GPS</button>
-            <button class="w-full bg-blue-600 text-white p-3 rounded-lg font-bold">Submit Report</button>
-        </form>
-
-        <h2 class="font-bold mb-4">My Complaints</h2>
-        <div class="space-y-4">
-            {% for c in complaints %}
-            <div class="bg-white p-4 rounded-lg shadow flex justify-between items-center border-l-4 {% if c.status == 'Resolved' %}border-green-500{% else %}border-yellow-500{% endif %}">
-                <div>
-                    <p class="font-bold">{{ c.dept }} Issue</p>
-                    <p class="text-sm text-gray-500">{{ c.description }}</p>
-                    {% if c.status == 'Resolved' %}<p class="text-green-600 text-xs font-bold">Reply: {{c.officer_reply}}</p>{% endif %}
-                </div>
-                <span class="px-3 py-1 rounded-full text-xs font-bold bg-gray-100">{{ c.status }}</span>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    <script>
-        function getLoc() {
-            navigator.geolocation.getCurrentPosition(p => {
-                document.getElementById('lat').value = p.coords.latitude;
-                document.getElementById('lng').value = p.coords.longitude;
-            });
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f3f6f9; color: #1a1a1a; }
+        .gov-card { background: white; border-radius: 2rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04); border: 1px solid #edf2f7; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .gov-card:hover { transform: translateY(-2px); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06); }
+        @media (max-width: 768px) {
+            .responsive-table .current-thead { display: none; }
+            .responsive-table .current-tr { display: block; border-bottom: 2px solid #edf2f7; padding: 1rem 0; }
+            .responsive-table .current-td { display: flex; justify-content: space-between; padding: 0.5rem 1rem; border: none; }
+            .responsive-table .current-td::before { content: attr(data-label); font-weight: bold; color: #718096; }
         }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <nav class="bg-white border-b border-gray-100 shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="{{ url_for('static', filename='Report2Resolve.jpg') }}" alt="Logo" class="w-12 h-auto object-contain">
+                <div class="border-l-2 border-emerald-100 h-8"></div>
+                <h1 class="text-2xl font-extrabold text-gray-900 tracking-tight">Report<span class="text-emerald-700">2</span>Resolve</h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="text-sm font-medium text-gray-500">Welcome, Bengaluru Citizen</span>
+                <a href="/" class="flex items-center gap-2 text-sm font-bold text-emerald-700 bg-emerald-50 px-5 py-2.5 rounded-xl hover:bg-emerald-100 transition-colors">
+                    <i data-lucide="log-out" class="w-4 h-4"></i> Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto p-6 md:p-10 space-y-10">
+        <section>
+            <div class="flex items-center gap-4 mb-8">
+                <div class="bg-emerald-600 p-4 rounded-2xl text-white shadow-lg"><i data-lucide="megaphone" class="w-8 h-8"></i></div>
+                <div>
+                    <h2 class="text-3xl font-extrabold text-gray-950 tracking-tight">Report a New Issue</h2>
+                    <p class="text-gray-500 font-medium">Help us keep Bengaluru clean, safe, and efficient</p>
+                </div>
+            </div>
+
+            <div class="gov-card p-10 border-t-8 border-emerald-600">
+                <form action="/submit" method="POST" enctype="multipart/form-data" class="space-y-8">
+                    <div class="relative">
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Issue Description</label>
+                        <div class="relative">
+                            <i data-lucide="align-left" class="absolute left-5 top-5 w-5 h-5 text-gray-400"></i>
+                            <textarea name="desc" rows="4" placeholder="Describe the problem..." class="w-full pl-14 pr-6 py-5 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:border-emerald-500 outline-none text-lg resize-none" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Upload Issue Photo</label>
+                            <label class="flex flex-col items-center justify-center w-full h-40 border-2 border-gray-200 border-dashed rounded-3xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+                                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                    <i data-lucide="image" class="w-10 h-10 text-gray-400 mb-3"></i>
+                                    <p class="mb-2 text-sm text-gray-500"><span class="font-bold">Click to upload</span></p>
+                                    <p id="file-name" class="text-xs text-emerald-600 font-bold">PNG or JPG (MAX. 5MB)</p>
+                                </div>
+                                <input type="file" name="img_before" class="hidden" accept="image/*" onchange="document.getElementById('file-name').innerText = this.files[0].name" />
+                            </label>
+                        </div>
+                        <div class="p-6 bg-emerald-50 rounded-2xl border-2 border-emerald-100">
+                            <h4 class="font-bold text-emerald-950 flex items-center gap-2"><i data-lucide="help-circle" class="w-4 h-4 text-emerald-600"></i> Why a photo helps</h4>
+                            <p class="text-sm text-emerald-800 mt-2">Clear pictures help authorities understand urgency faster.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Latitude</label>
+                                <input type="text" id="lat" name="lat" readonly class="w-full p-4 bg-gray-100 border border-gray-200 rounded-xl text-gray-600 font-medium" placeholder="Auto-fills...">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Longitude</label>
+                                <input type="text" id="lng" name="lng" readonly class="w-full p-4 bg-gray-100 border border-gray-200 rounded-xl text-gray-600 font-medium" placeholder="Auto-fills...">
+                            </div>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button type="button" onclick="getLocation(event)" class="sm:flex-1 flex items-center justify-center gap-2 text-sm font-bold text-emerald-700 bg-emerald-50 px-6 py-4 rounded-xl hover:bg-emerald-100 transition-all">
+                                <i data-lucide="map-pin" class="w-5 h-5"></i> auto-fetch My Location
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xl py-5 rounded-3xl shadow-xl transition-all flex items-center justify-center gap-3">
+                        Submit Official Report <i data-lucide="send" class="w-6 h-6"></i>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <section>
+            <div class="flex items-center gap-4 mb-8">
+                <div class="bg-emerald-600 p-4 rounded-2xl text-white shadow-lg"><i data-lucide="folder-key" class="w-8 h-8"></i></div>
+                <h2 class="text-3xl font-extrabold text-gray-950 tracking-tight">My Past Complaints</h2>
+            </div>
+            <div class="gov-card p-1 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="responsive-table w-full text-left">
+                        <thead class="current-thead border-b-2 border-gray-100 bg-gray-50/50">
+                            <tr>
+                                <th class="p-6 text-xs font-bold text-gray-400 uppercase tracking-widest">ID</th>
+                                <th class="p-6 text-xs font-bold text-gray-400 uppercase tracking-widest">Report Detail</th>
+                                <th class="p-6 text-xs font-bold text-gray-400 uppercase tracking-widest text-center">Status</th>
+                                <th class="p-6 text-xs font-bold text-gray-400 uppercase tracking-widest text-center">Votes</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            {% for c in complaints %}
+                            <tr class="current-tr hover:bg-gray-50">
+                                <td data-label="ID" class="current-td p-6 font-bold text-gray-400">#{{ c.id }}</td>
+                                <td data-label="Description" class="current-td p-6 font-semibold text-gray-900">{{ c.description }}</td>
+                                <td data-label="Status" class="current-td p-6 text-center">
+                                    <span class="text-xs font-bold bg-emerald-50 text-emerald-700 px-4 py-2 rounded-full uppercase tracking-wider">{{ c.status }}</span>
+                                </td>
+                                <td data-label="Votes" class="current-td p-6 text-center font-extrabold text-emerald-700 text-xl">{{ c.vote_count }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function getLocation(event) {
+            if (navigator.geolocation) {
+                const btn = event.currentTarget;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = `Locating...`;
+                btn.disabled = true; // Fixed: true instead of True
+
+                navigator.geolocation.getCurrentPosition((position) => {
+                    document.getElementById('lat').value = position.coords.latitude.toFixed(6);
+                    document.getElementById('lng').value = position.coords.longitude.toFixed(6);
+                    btn.innerHTML = originalText;
+                    btn.disabled = false; // Fixed: false instead of False
+                }, (error) => {
+                    alert("Error: Please enable location permissions.");
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                });
+            } else { alert("Geolocation not supported."); }
+        }
+        lucide.createIcons();
     </script>
 </body>
 </html>
