@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-6">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-2xl font-bold mb-6">Report an Issue</h1>
+        <form action="/submit" method="POST" class="bg-white p-6 rounded-xl shadow mb-8">
+            <textarea name="desc" placeholder="Describe the problem..." class="w-full border p-3 rounded-lg mb-4" required></textarea>
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <input type="text" name="lat" id="lat" placeholder="Latitude" class="border p-2 rounded" required>
+                <input type="text" name="lng" id="lng" placeholder="Longitude" class="border p-2 rounded" required>
+            </div>
+            <button type="button" onclick="getLoc()" class="bg-gray-200 px-4 py-2 rounded mb-4 text-sm">Get GPS</button>
+            <button class="w-full bg-blue-600 text-white p-3 rounded-lg font-bold">Submit Report</button>
+        </form>
+
+        <h2 class="font-bold mb-4">My Complaints</h2>
+        <div class="space-y-4">
+            {% for c in complaints %}
+            <div class="bg-white p-4 rounded-lg shadow flex justify-between items-center border-l-4 {% if c.status == 'Resolved' %}border-green-500{% else %}border-yellow-500{% endif %}">
+                <div>
+                    <p class="font-bold">{{ c.dept }} Issue</p>
+                    <p class="text-sm text-gray-500">{{ c.description }}</p>
+                    {% if c.status == 'Resolved' %}<p class="text-green-600 text-xs font-bold">Reply: {{c.officer_reply}}</p>{% endif %}
+                </div>
+                <span class="px-3 py-1 rounded-full text-xs font-bold bg-gray-100">{{ c.status }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <script>
+        function getLoc() {
+            navigator.geolocation.getCurrentPosition(p => {
+                document.getElementById('lat').value = p.coords.latitude;
+                document.getElementById('lng').value = p.coords.longitude;
+            });
+        }
+    </script>
+</body>
+</html>
