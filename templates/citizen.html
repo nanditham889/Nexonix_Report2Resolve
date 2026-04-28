@@ -28,8 +28,15 @@
                 <div class="border-l-2 border-emerald-100 h-8"></div>
                 <h1 class="text-2xl font-extrabold text-gray-900 tracking-tight">Report<span class="text-emerald-700">2</span>Resolve</h1>
             </div>
+            
+            <div class="flex items-center gap-2 mr-4">
+                <button onclick="changeLanguage('en')" class="text-[10px] font-bold px-2 py-1 border rounded hover:bg-gray-50">EN</button>
+                <button onclick="changeLanguage('kn')" class="text-[10px] font-bold px-2 py-1 border rounded hover:bg-gray-50">ಕನ್ನಡ</button>
+                <button onclick="changeLanguage('hi')" class="text-[10px] font-bold px-2 py-1 border rounded hover:bg-gray-50">हिन्दी</button>
+            </div>
+
             <div class="flex items-center gap-4">
-                <span class="text-sm font-medium text-gray-500">Welcome, Bengaluru Citizen</span>
+                <span class="text-sm font-medium text-gray-500 hidden md:block" data-key="welcome_msg">Welcome, Bengaluru Citizen</span>
                 <a href="/" class="flex items-center gap-2 text-sm font-bold text-emerald-700 bg-emerald-50 px-5 py-2.5 rounded-xl hover:bg-emerald-100 transition-colors">
                     <i data-lucide="log-out" class="w-4 h-4"></i> Logout
                 </a>
@@ -42,8 +49,8 @@
             <div class="flex items-center gap-4 mb-8">
                 <div class="bg-emerald-600 p-4 rounded-2xl text-white shadow-lg"><i data-lucide="megaphone" class="w-8 h-8"></i></div>
                 <div>
-                    <h2 class="text-3xl font-extrabold text-gray-950 tracking-tight">Report a New Issue</h2>
-                    <p class="text-gray-500 font-medium">Help us keep Bengaluru clean, safe, and efficient</p>
+                    <h2 class="text-3xl font-extrabold text-gray-950 tracking-tight" data-key="report_title">Report a New Issue</h2>
+                    <p class="text-gray-500 font-medium" data-key="report_subtitle">Help us keep Bengaluru clean, safe, and efficient</p>
                 </div>
             </div>
 
@@ -53,7 +60,7 @@
                         <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Issue Description</label>
                         <div class="relative">
                             <i data-lucide="align-left" class="absolute left-5 top-5 w-5 h-5 text-gray-400"></i>
-                            <textarea name="desc" rows="4" placeholder="Describe the problem..." class="w-full pl-14 pr-6 py-5 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:border-emerald-500 outline-none text-lg resize-none" required></textarea>
+                            <textarea name="desc" rows="4" placeholder="Describe the problem (e.g. Broken pipe or Garbage)..." class="w-full pl-14 pr-6 py-5 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:border-emerald-500 outline-none text-lg resize-none" required></textarea>
                         </div>
                     </div>
 
@@ -71,7 +78,7 @@
                         </div>
                         <div class="p-6 bg-emerald-50 rounded-2xl border-2 border-emerald-100">
                             <h4 class="font-bold text-emerald-950 flex items-center gap-2"><i data-lucide="help-circle" class="w-4 h-4 text-emerald-600"></i> Why a photo helps</h4>
-                            <p class="text-sm text-emerald-800 mt-2">Clear pictures help authorities understand urgency faster.</p>
+                            <p class="text-sm text-emerald-800 mt-2">Clear pictures help authorities classify and dispatch teams faster via our AI engine.</p>
                         </div>
                     </div>
 
@@ -94,7 +101,7 @@
                     </div>
 
                     <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xl py-5 rounded-3xl shadow-xl transition-all flex items-center justify-center gap-3">
-                        Submit Official Report <i data-lucide="send" class="w-6 h-6"></i>
+                        <span data-key="btn_submit">Submit Official Report</span> <i data-lucide="send" class="w-6 h-6"></i>
                     </button>
                 </form>
             </div>
@@ -103,14 +110,14 @@
         <section>
             <div class="flex items-center gap-4 mb-8">
                 <div class="bg-emerald-600 p-4 rounded-2xl text-white shadow-lg"><i data-lucide="folder-key" class="w-8 h-8"></i></div>
-                <h2 class="text-3xl font-extrabold text-gray-950 tracking-tight">My Past Complaints</h2>
+                <h2 class="text-3xl font-extrabold text-gray-950 tracking-tight" data-key="past_reports">My Past Complaints</h2>
             </div>
             <div class="gov-card p-1 overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="responsive-table w-full text-left">
                         <thead class="current-thead border-b-2 border-gray-100 bg-gray-50/50">
                             <tr>
-                                <th class="p-6 text-xs font-bold text-gray-400 uppercase tracking-widest">ID</th>
+                                <th class="p-6 text-xs font-bold text-gray-400 uppercase tracking-widest text-center">Visual Proof</th>
                                 <th class="p-6 text-xs font-bold text-gray-400 uppercase tracking-widest">Report Detail</th>
                                 <th class="p-6 text-xs font-bold text-gray-400 uppercase tracking-widest text-center">Status</th>
                                 <th class="p-6 text-xs font-bold text-gray-400 uppercase tracking-widest text-center">Votes</th>
@@ -119,8 +126,14 @@
                         <tbody class="divide-y divide-gray-100">
                             {% for c in complaints %}
                             <tr class="current-tr hover:bg-gray-50">
-                                <td data-label="ID" class="current-td p-6 font-bold text-gray-400">#{{ c.id }}</td>
-                                <td data-label="Description" class="current-td p-6 font-semibold text-gray-900">{{ c.description }}</td>
+                                <td data-label="Photo" class="current-td p-4 text-center">
+                                    <img src="{{ url_for('static', filename='uploads/' + c.img_before) }}" 
+                                         class="w-20 h-20 object-cover rounded-2xl border-2 border-white shadow-sm inline-block mx-auto">
+                                </td>
+                                <td data-label="Description" class="current-td p-6 font-semibold text-gray-900">
+                                    <p>{{ c.description }}</p>
+                                    <span class="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">Dept: {{ c.dept }}</span>
+                                </td>
                                 <td data-label="Status" class="current-td p-6 text-center">
                                     <span class="text-xs font-bold bg-emerald-50 text-emerald-700 px-4 py-2 rounded-full uppercase tracking-wider">{{ c.status }}</span>
                                 </td>
@@ -134,19 +147,20 @@
         </section>
     </main>
 
+    <script src="/static/js/translations.js"></script>
     <script>
         function getLocation(event) {
             if (navigator.geolocation) {
                 const btn = event.currentTarget;
                 const originalText = btn.innerHTML;
                 btn.innerHTML = `Locating...`;
-                btn.disabled = true; // Fixed: true instead of True
+                btn.disabled = true;
 
                 navigator.geolocation.getCurrentPosition((position) => {
                     document.getElementById('lat').value = position.coords.latitude.toFixed(6);
                     document.getElementById('lng').value = position.coords.longitude.toFixed(6);
                     btn.innerHTML = originalText;
-                    btn.disabled = false; // Fixed: false instead of False
+                    btn.disabled = false;
                 }, (error) => {
                     alert("Error: Please enable location permissions.");
                     btn.innerHTML = originalText;
