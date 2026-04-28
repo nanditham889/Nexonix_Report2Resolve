@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head><script src="https://cdn.tailwindcss.com"></script></head>
+<body class="bg-zinc-950 text-white p-6 font-sans">
+    <div class="max-w-xl mx-auto">
+        <h2 class="text-3xl font-black mb-6">Upload Evidence</h2>
+        <form action="/resolve_upload/{{ item.id }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+            <div class="bg-zinc-900 p-10 rounded-[3rem] border-2 border-dashed border-zinc-700 text-center">
+                <input type="file" name="img_after" accept="image/*" capture="environment" id="cam" class="hidden" onchange="this.form.submit()">
+                <label for="cam" class="cursor-pointer">
+                    <div class="bg-emerald-600 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    </div>
+                    <p class="font-bold">TAP TO OPEN CAMERA</p>
+                    <p class="text-zinc-500 text-sm">Take a photo of the resolved issue</p>
+                </label>
+            </div>
+            <a href="/worker_tasks" class="block text-center text-zinc-500 font-bold">Cancel</a>
+        </form>
+    </div>
+</body>
+</html>

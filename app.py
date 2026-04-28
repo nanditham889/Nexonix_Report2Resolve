@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 import os
+import math  # Required for distance/duplicate checking logic
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -35,6 +36,17 @@ class Complaint(db.Model):
     img_after = db.Column(db.String(200))
     vote_count = db.Column(db.Integer, default=1)
     assigned_to = db.Column(db.String(100), nullable=True)
+
+# --- HELPER FUNCTIONS ---
+def calculate_distance(lat1, lon1, lat2, lon2):
+    """Calculates the distance between two coordinates in meters."""
+    radius = 6371000 
+    dlat = math.radians(lat2 - lat1)
+    dlon = math.radians(lon2 - lon1)
+    a = math.sin(dlat/2)**2 + math.cos(math.radians(lat1)) * \
+        math.cos(math.radians(lat2)) * math.sin(dlon/2)**2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+    return radius * c
 
 def ai_classify(text):
     text = text.lower()
@@ -79,10 +91,13 @@ def citizen_dashboard():
     return render_template('citizen.html', complaints=items)
 
 @app.route('/officer_hub')
-def officer_dashboard(): return render_template('officer_hub.html')
+def officer_dashboard(): 
+    items = Complaint.query.all()
+    return render_template('officer_hub.html', items=items)
 
 @app.route('/worker_tasks')
 def worker_dashboard():
+    # Only show tasks that are assigned and not yet finished
     items = Complaint.query.filter(Complaint.status != 'Resolved').all()
     return render_template('worker.html', items=items)
 
@@ -92,11 +107,28 @@ def submit():
     lat = float(request.form.get('lat'))
     lng = float(request.form.get('lng'))
     file = request.files.get('img_before')
+    
     filename = 'pothole_before.jpg'
     if file and file.filename != '':
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    
     dept = ai_classify(desc)
+
+    # DUPLICATE DETECTION: Check if another report exists within 50m
+    existing_complaints = Complaint.query.filter(
+        Complaint.dept == dept, 
+        Complaint.status != 'Resolved'
+    ).all()
+
+    for comp in existing_complaints:
+        dist = calculate_distance(lat, lng, comp.lat, comp.lng)
+        if dist < 50:  # Same issue reported nearby
+            comp.vote_count += 1
+            db.session.commit()
+            return redirect(url_for('citizen_dashboard'))
+
+    # New unique report creation
     new_c = Complaint(description=desc, dept=dept, lat=lat, lng=lng, img_before=filename)
     db.session.add(new_c)
     db.session.commit()
@@ -107,28 +139,30 @@ def dept_view(name):
     items = Complaint.query.filter_by(dept=name).all()
     return render_template('officer_dept.html', items=items, dept_name=name)
 
-@app.route('/assign/<int:id>', methods=['POST'])
+@app.route('/assign/<int:id>', methods=['POST', 'GET'])
 def assign(id):
     c = Complaint.query.get(id)
-    worker = request.form.get('worker_name')
-    if c and worker:
-        c.assigned_to = worker
-        c.status = 'Assigned'
-        db.session.commit()
-    return redirect(request.referrer)
-
-@app.route('/claim/<int:id>')
-def claim(id):
-    c = Complaint.query.get(id)
+    # Handles both manual worker name selection or "Auto-Assign"
+    worker = request.form.get('worker_name') or "Staff_Ramesh"
     if c:
-        c.status = 'In Progress'; db.session.commit()
-    return redirect(url_for('worker_dashboard'))
+        c.assigned_to = worker
+        c.status = 'In Progress'
+        db.session.commit()
+    return redirect(request.referrer or url_for('officer_dashboard'))
 
-@app.route('/resolve/<int:id>')
+@app.route('/resolve/<int:id>', methods=['POST'])
 def resolve(id):
     c = Complaint.query.get(id)
     if c:
-        c.status = 'Resolved'; db.session.commit()
+        # Handles "After Photo" upload from the Field Ops view
+        file = request.files.get('img_after')
+        if file and file.filename != '':
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            c.img_after = filename
+            
+        c.status = 'Resolved'
+        db.session.commit()
     return redirect(url_for('worker_dashboard'))
 
 if __name__ == '__main__':
