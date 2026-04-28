@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citizen Access | Report2Resolve</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        .auth-card { border-top: 6px solid #059669; }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md auth-card">
+        <div class="text-center mb-8">
+            <img src="{{ url_for('static', filename='Report2Resolve.jpg') }}" alt="Logo" class="w-20 mx-auto mb-4">
+            <h2 id="auth-title" class="text-2xl font-extrabold text-gray-900">Sign In</h2>
+            <p id="auth-subtitle" class="text-gray-500 text-sm">Access your dashboard</p>
+        </div>
+
+        <div class="flex bg-gray-100 p-1 rounded-xl mb-8">
+            <button onclick="toggleAuth('login')" id="login-tab" class="w-1/2 py-2 text-sm font-bold rounded-lg bg-white shadow-sm text-emerald-700">Login</button>
+            <button onclick="toggleAuth('register')" id="register-tab" class="w-1/2 py-2 text-sm font-bold rounded-lg text-gray-500 hover:text-emerald-600">Register</button>
+        </div>
+
+        <form action="/auth_action?role={{ role }}" method="POST" class="space-y-5">
+            <div id="name-field" class="hidden">
+                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Full Name</label>
+                <div class="relative">
+                    <i data-lucide="user" class="absolute left-4 top-3.5 w-5 h-5 text-gray-400"></i>
+                    <input type="text" name="username" placeholder="John Doe" class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Email Address</label>
+                <div class="relative">
+                    <i data-lucide="mail" class="absolute left-4 top-3.5 w-5 h-5 text-gray-400"></i>
+                    <input type="email" name="email" required placeholder="name@example.com" class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Password</label>
+                <div class="relative">
+                    <i data-lucide="lock" class="absolute left-4 top-3.5 w-5 h-5 text-gray-400"></i>
+                    <input type="password" name="password" required placeholder="••••••••" class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none">
+                </div>
+            </div>
+
+            <button type="submit" id="submit-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl shadow-lg transition-all transform active:scale-95">
+                Sign In
+            </button>
+        </form>
+
+        <div class="mt-8 text-center border-t pt-6">
+            <a href="/" class="text-sm font-semibold text-gray-400 hover:text-emerald-600 flex items-center justify-center gap-2">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Role Selection
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function toggleAuth(mode) {
+            const title = document.getElementById('auth-title');
+            const subtitle = document.getElementById('auth-subtitle');
+            const nameField = document.getElementById('name-field');
+            const submitBtn = document.getElementById('submit-btn');
+            const loginTab = document.getElementById('login-tab');
+            const registerTab = document.getElementById('register-tab');
+
+            if (mode === 'register') {
+                title.innerText = 'Create Account';
+                subtitle.innerText = 'Join NexusCity Smart Governance';
+                nameField.classList.remove('hidden');
+                submitBtn.innerText = 'Register Now';
+                registerTab.className = "w-1/2 py-2 text-sm font-bold rounded-lg bg-white shadow-sm text-emerald-700";
+                loginTab.className = "w-1/2 py-2 text-sm font-bold rounded-lg text-gray-500 hover:text-emerald-600";
+            } else {
+                title.innerText = 'Sign In';
+                subtitle.innerText = 'Access your dashboard';
+                nameField.classList.add('hidden');
+                submitBtn.innerText = 'Sign In';
+                loginTab.className = "w-1/2 py-2 text-sm font-bold rounded-lg bg-white shadow-sm text-emerald-700";
+                registerTab.className = "w-1/2 py-2 text-sm font-bold rounded-lg text-gray-500 hover:text-emerald-600";
+            }
+        }
+        lucide.createIcons();
+    </script>
+</body>
+</html>

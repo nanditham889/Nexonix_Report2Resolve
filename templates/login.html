@@ -3,180 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Report2Resolve | Official Municipal Portal</title>
+    <title>Report2Resolve | Official Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-        
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            margin: 0;
-            overflow-x: hidden;
-            /* Watercolor-style base gradient */
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2f1 50%, #f1f8e9 100%);
+            background-color: #f0f4f8; 
         }
-
-        /* Artistic Watercolor Background Elements */
-        .watercolor-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            opacity: 0.6;
-            filter: blur(60px);
+        .gov-card {
+            transition: all 0.2s ease-in-out;
         }
-        .blob-left {
-            position: absolute; top: 20%; left: -10%; width: 500px; height: 500px;
-            background: #94a3b8; border-radius: 50%; /* Represents urban grey/issues */
+        .gov-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.1);
         }
-        .blob-right {
-            position: absolute; bottom: 10%; right: -5%; width: 600px; height: 600px;
-            background: #a7f3d0; border-radius: 50%; /* Represents green/resolution */
-        }
-
-        /* High-End Card Styling */
-        .glass-portal {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
-        }
-
-        .role-card {
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .role-card:hover {
-            transform: scale(1.02) translateY(-5px);
-            background: white;
+        /* Style for the logo image to keep it responsive and clean */
+        .brand-logo {
+            width: 120px;
+            height: auto;
+            object-fit: contain;
         }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-4 md:p-12">
+<body class="flex items-center justify-center min-h-screen p-6">
 
-    <div class="watercolor-bg">
-        <div class="blob-left"></div>
-        <div class="blob-right"></div>
-    </div>
-
-    <div class="fixed inset-0 pointer-events-none opacity-20 flex justify-between p-20 hidden lg:flex">
-        <div class="flex flex-col gap-12 text-slate-400">
-            <div class="flex items-center gap-4"><i data-lucide="droplets" class="w-12 h-12"></i><span class="font-bold">Water Leakage</span></div>
-            <div class="flex items-center gap-4"><i data-lucide="trash-2" class="w-12 h-12"></i><span class="font-bold">Waste Dumping</span></div>
-        </div>
-        <div class="flex flex-col gap-12 text-emerald-500 items-end">
-            <div class="flex items-center gap-4"><span class="font-bold">Community Care</span><i data-lucide="heart-handshake" class="w-12 h-12"></i></div>
-            <div class="flex items-center gap-4"><span class="font-bold">Reforestation</span><i data-lucide="tree-pine" class="w-12 h-12"></i></div>
-        </div>
-    </div>
-
-    <div class="glass-portal rounded-[4rem] w-full max-w-3xl overflow-hidden p-10 md:p-20 relative text-center">
+    <div class="bg-white border-t-[10px] border-emerald-700 rounded-[3rem] shadow-2xl w-full max-w-2xl overflow-hidden p-10 md:p-16">
         
-        <div class="mb-12">
-            <div class="inline-flex items-center justify-center bg-white shadow-sm border border-emerald-50 px-8 py-5 rounded-[2.5rem] mb-6">
-                <div class="relative mr-4">
-                    <div class="absolute inset-0 bg-emerald-200 blur-lg opacity-50 rounded-full"></div>
-                    <i data-lucide="map-pin" class="w-12 h-12 text-emerald-700 relative"></i>
-                </div>
-                <div class="text-left">
-                    <h1 class="text-5xl font-black text-slate-900 tracking-tighter leading-none">
-                        Report<span class="text-emerald-600">2</span>Resolve
-                    </h1>
-                    <p class="text-[11px] font-extrabold text-slate-400 uppercase tracking-[0.4em] mt-1">
-                        Bengaluru City Operations
-                    </p>
-                </div>
+        <div class="text-center mb-12">
+            <div class="flex flex-col items-center justify-center mb-6">
+                <img src="{{ url_for('static', filename='Report2Resolve.jpg') }}" alt="Report2Resolve Logo" class="brand-logo mb-4">
+                
+                <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight">
+                    Report<span class="text-emerald-700">2</span>Resolve
+                </h1>
             </div>
-            <p id="tagline" class="text-slate-500 font-medium italic text-lg opacity-80">
-                "Bridging the gap between civic issues and swift resolutions."
+            
+            <p id="tagline" class="text-gray-500 font-medium tracking-wide uppercase text-sm">
+                Municipal Operations & Public Service Portal
             </p>
+            <div class="w-24 h-1 bg-emerald-600 mx-auto mt-4 rounded-full opacity-30"></div>
         </div>
 
-        <div class="max-w-xs mx-auto mb-12">
-            <div class="flex items-center justify-center gap-2 mb-4">
+        <div class="mb-12 max-w-md mx-auto">
+            <div class="flex items-center justify-center gap-2 mb-3">
                 <i data-lucide="languages" class="w-4 h-4 text-emerald-600"></i>
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Select Access Language</span>
+                <label class="text-xs font-bold text-gray-400 uppercase tracking-widest">Select Portal Language</label>
             </div>
-            <select id="langSelect" onchange="changeLanguage()" class="w-full bg-white/50 border border-slate-200 rounded-3xl p-5 text-center font-bold text-slate-700 focus:ring-4 focus:ring-emerald-500/10 outline-none cursor-pointer appearance-none shadow-sm">
-                <option value="en">English (Official)</option>
-                <option value="hi">Hindi (हिंदी)</option>
-                <option value="kn">Kannada (ಕನ್ನಡ)</option>
-            </select>
+            <div class="relative">
+                <select id="langSelect" onchange="changeLanguage()" class="w-full bg-gray-50 border-2 border-gray-100 rounded-2xl p-4 text-center text-gray-800 font-bold focus:border-emerald-500 outline-none cursor-pointer hover:bg-gray-100 transition-colors appearance-none">
+                    <option value="en">English (Official)</option>
+                    <option value="hi">Hindi (हिंदी)</option>
+                    <option value="kn">Kannada (ಕನ್ನಡ)</option>
+                </select>
+                <div class="absolute inset-y-0 right-5 flex items-center pointer-events-none text-gray-400">
+                    <i data-lucide="chevron-down" class="w-5 h-5"></i>
+                </div>
+            </div>
         </div>
 
-        <div class="grid gap-6">
-            <a href="/citizen" class="role-card group flex items-center p-8 bg-white/40 border border-emerald-100 rounded-[2.5rem]">
-                <div class="bg-emerald-600 p-5 rounded-3xl text-white shadow-xl shadow-emerald-200 group-hover:rotate-6 transition-transform">
-                    <i data-lucide="user-plus" class="w-8 h-8"></i>
+        <div class="space-y-6">
+            <a href="/citizen" class="gov-card group flex items-center p-8 bg-white border-2 border-emerald-50 rounded-3xl hover:bg-emerald-50 transition-all">
+                <div class="bg-emerald-600 p-4 rounded-2xl text-white shadow-lg group-hover:scale-110 transition-transform">
+                    <i data-lucide="user-plus" class="w-7 h-7"></i>
                 </div>
-                <div class="ml-8 text-left">
-                    <h3 id="role-citizen" class="text-2xl font-black text-slate-900">Citizen Login</h3>
-                    <p id="desc-citizen" class="text-slate-500 font-medium">Report issues & monitor city health</p>
+                <div class="ml-6 text-left">
+                    <h3 id="role-citizen" class="text-2xl font-extrabold text-gray-900">Citizen Login</h3>
+                    <p id="desc-citizen" class="text-gray-500 font-medium">Register complaints & track live updates</p>
                 </div>
-                <div class="ml-auto bg-slate-50 p-3 rounded-full group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                    <i data-lucide="arrow-right" class="w-6 h-6"></i>
-                </div>
+                <i data-lucide="arrow-right" class="ml-auto text-gray-300 group-hover:text-emerald-600 group-hover:translate-x-2 transition-all"></i>
             </a>
 
-            <a href="/officer" class="role-card group flex items-center p-8 bg-white/40 border border-orange-100 rounded-[2.5rem]">
-                <div class="bg-orange-600 p-5 rounded-3xl text-white shadow-xl shadow-orange-200 group-hover:rotate-6 transition-transform">
-                    <i data-lucide="shield-check" class="w-8 h-8"></i>
+            <a href="/officer" class="gov-card group flex items-center p-8 bg-white border-2 border-orange-50 rounded-3xl hover:bg-orange-50 transition-all">
+                <div class="bg-orange-600 p-4 rounded-2xl text-white shadow-lg group-hover:scale-110 transition-transform">
+                    <i data-lucide="shield-check" class="w-7 h-7"></i>
                 </div>
-                <div class="ml-8 text-left">
-                    <h3 id="role-officer" class="text-2xl font-black text-slate-900">Authority Login</h3>
-                    <p id="desc-officer" class="text-slate-500 font-medium">Manage departments & verify resolutions</p>
+                <div class="ml-6 text-left">
+                    <h3 id="role-officer" class="text-2xl font-extrabold text-gray-900">Authority Login</h3>
+                    <p id="desc-officer" class="text-gray-500 font-medium">Verify reports & dispatch field teams</p>
                 </div>
-                <div class="ml-auto bg-slate-50 p-3 rounded-full group-hover:bg-orange-600 group-hover:text-white transition-colors">
-                    <i data-lucide="arrow-right" class="w-6 h-6"></i>
-                </div>
+                <i data-lucide="arrow-right" class="ml-auto text-gray-300 group-hover:text-orange-600 group-hover:translate-x-2 transition-all"></i>
             </a>
 
-            <a href="/worker" class="role-card group flex items-center p-8 bg-white/40 border border-blue-100 rounded-[2.5rem]">
-                <div class="bg-blue-600 p-5 rounded-3xl text-white shadow-xl shadow-blue-200 group-hover:rotate-6 transition-transform">
-                    <i data-lucide="hard-hat" class="w-8 h-8"></i>
+            <a href="/worker" class="gov-card group flex items-center p-8 bg-white border-2 border-blue-50 rounded-3xl hover:bg-blue-50 transition-all">
+                <div class="bg-blue-600 p-4 rounded-2xl text-white shadow-lg group-hover:scale-110 transition-transform">
+                    <i data-lucide="truck" class="w-7 h-7"></i>
                 </div>
-                <div class="ml-8 text-left">
-                    <h3 id="role-worker" class="text-2xl font-black text-slate-900">Field Staff Login</h3>
-                    <p id="desc-worker" class="text-slate-500 font-medium">Execute tasks & provide ground proof</p>
+                <div class="ml-6 text-left">
+                    <h3 id="role-worker" class="text-2xl font-extrabold text-gray-900">Field Staff Login</h3>
+                    <p id="desc-worker" class="text-gray-500 font-medium">View assigned tasks & submit proof</p>
                 </div>
-                <div class="ml-auto bg-slate-50 p-3 rounded-full group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                    <i data-lucide="arrow-right" class="w-6 h-6"></i>
-                </div>
+                <i data-lucide="arrow-right" class="ml-auto text-gray-300 group-hover:text-blue-600 group-hover:translate-x-2 transition-all"></i>
             </a>
         </div>
 
-        <div class="mt-16 text-slate-300 font-bold text-[10px] uppercase tracking-[0.4em]">
-            Official Digital Initiative • Municipal Administration Dept
+        <div class="mt-16 text-center border-t border-gray-100 pt-8">
+            <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.2em]">
+                An Initiative of Municipal Administration • Bengaluru
+            </p>
         </div>
     </div>
 
     <script>
         const dict = {
             'en': {
-                'tagline': '"Bridging the gap between civic issues and swift resolutions."',
+                'tagline': 'Municipal Operations & Public Service Portal',
                 'citizen': 'Citizen Login',
-                'citizen_d': 'Report issues & monitor city health',
+                'citizen_d': 'Register complaints & track live updates',
                 'officer': 'Authority Login',
-                'officer_d': 'Manage departments & verify resolutions',
+                'officer_d': 'Verify reports & dispatch field teams',
                 'worker': 'Field Staff Login',
-                'worker_d': 'Execute tasks & provide ground proof'
+                'worker_d': 'View assigned tasks & submit proof'
             },
             'hi': {
-                'tagline': '"नागरिक समस्याओं और त्वरित समाधानों के बीच की दूरी को कम करना।"',
+                'tagline': 'नगरपालिका संचालन और जन सेवा पोर्टल',
                 'citizen': 'नागरिक लॉगिन',
-                'citizen_d': 'मुद्दों की रिपोर्ट करें और शहर के स्वास्थ्य की निगरानी करें',
+                'citizen_d': 'शिकायत दर्ज करें और लाइव अपडेट ट्रैक करें',
                 'officer': 'प्राधिकारी लॉगिन',
-                'officer_d': 'विभागों का प्रबंधन करें और समाधान सत्यापित करें',
-                'worker': 'फील्ड स्टाफ लॉगिन',
-                'worker_d': 'कार्यों को निष्पादित करें और जमीनी प्रमाण प्रदान करें'
+                'officer_d': 'रिपोर्ट सत्यापित करें और टीमें भेजें',
+                'worker': 'क्षेत्र कर्मचारी लॉगिन',
+                'worker_d': 'कार्य देखें और प्रमाण प्रस्तुत करें'
             },
             'kn': {
-                'tagline': '"ನಾಗರಿಕ ಸಮಸ್ಯೆಗಳು ಮತ್ತು ತ್ವರಿತ ಪರಿಹಾರಗಳ ನಡುವಿನ ಅಂತರವನ್ನು ಕಡಿಮೆ ಮಾಡುವುದು."',
+                'tagline': 'ನಗರಸಭೆ ಕಾರ್ಯಾಚರಣೆ ಮತ್ತು ಸಾರ್ವಜನಿಕ ಸೇವಾ ಪೋರ್ಟಲ್',
                 'citizen': 'ನಾಗರಿಕ ಲಾಗಿನ್',
-                'citizen_d': 'ಸಮಸ್ಯೆಗಳನ್ನು ವರದಿ ಮಾಡಿ ಮತ್ತು ನಗರದ ಆರೋಗ್ಯವನ್ನು ಮೇಲ್ವಿಚಾರಣೆ ಮಾಡಿ',
+                'citizen_d': 'ದೂರುಗಳನ್ನು ಸಲ್ಲಿಸಿ ಮತ್ತು ಲೈವ್ ಅಪ್‌ಡೇಟ್ ಗಮನಿಸಿ',
                 'officer': 'ಅಧಿಕಾರಿ ಲಾಗಿನ್',
-                'officer_d': 'ಇಲಾಖೆಗಳನ್ನು ನಿರ್ವಹಿಸಿ ಮತ್ತು ಪರಿಹಾರಗಳನ್ನು ಪರಿಶೀಲಿಸಿ',
+                'officer_d': 'ವರದಿಗಳನ್ನು ಪರಿಶೀಲಿಸಿ ಮತ್ತು ತಂಡಗಳನ್ನು ನಿಯೋಜಿಸಿ',
                 'worker': 'ಕ್ಷೇತ್ರ ಸಿಬ್ಬಂದಿ ಲಾಗಿನ್',
-                'worker_d': 'ಕೆಲಸಗಳನ್ನು ನಿರ್ವಹಿಸಿ ಮತ್ತು ಪುರಾವೆ ಒದಗಿಸಿ'
+                'worker_d': 'ಕೆಲಸಗಳನ್ನು ವೀಕ್ಷಿಸಿ ಮತ್ತು ಪುರಾವೆ ಸಲ್ಲಿಸಿ'
             }
         };
 
